@@ -1,7 +1,44 @@
+import { useState } from 'react';
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+import Image from 'next/image';
+import Alert from '../components/Alert';
+import Wrapper from '../components/Wrapper';
+import SearchInput from '../components/SearchInput';
+import styled from 'styled-components';
+
+const Container = styled.section`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 6.4rem;
+  width: 50%;
+  background: transparent;
+`;
+
+const Left = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 45rem;
+  gap: 1.6rem;
+`;
+
+const ListHolder = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 48rem;
+  border-radius: 4px;
+  background-color: var(--white-clr);
+`;
+
+const Right = styled.div`
+  width: 50rem;
+  background-color: var(--white-clr);
+`;
 
 export default function Home() {
+  const [productsAvailable, setProductsAvailable] = useState<boolean>(true);
   return (
     <>
       <Head>
@@ -10,20 +47,41 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main className={styles.main}>
-        <section className={styles.container}>
-          <div className={styles.left}>
+      <Wrapper>
+        <Container>
+          <Left>
             {/* SEARCH BAR */}
-            <input
-              className={styles.input}
-              type='text'
+            <SearchInput
+              id='searchProducts'
+              name='searchProducts'
               placeholder='Search Products'
             />
-            <div className={styles.listHolder}>Products</div>
-          </div>
-          <div className={styles.right}>RIGHT</div>
-        </section>
-      </main>
+            <ListHolder>
+              {productsAvailable ? (
+                <div className=''>
+                  <article className='product-card'>
+                    <Image
+                      src='https://plazavea.vteximg.com.br/arquivos/ids/561765-450-450/20192547.jpg?v=637427443242800000'
+                      alt='A yogurt image'
+                      width={75}
+                      height={75}
+                      draggable={false}
+                    />
+                  </article>
+                  <div className=''>
+                    <p>Yogurt de coco Laive</p>
+                    <h2>$23.00</h2>
+                  </div>
+                  <button>Add</button>
+                </div>
+              ) : (
+                <Alert />
+              )}
+            </ListHolder>
+          </Left>
+          <Right>RIGHT</Right>
+        </Container>
+      </Wrapper>
     </>
   );
 }
