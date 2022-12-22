@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Head from 'next/head';
-import Image from 'next/image';
 import Alert from '../components/Alert';
 import Wrapper from '../components/Wrapper';
 import SearchInput from '../components/SearchInput';
+import ProductsList from '../components/ProductsList';
 import styled from 'styled-components';
 
 const Container = styled.section`
@@ -50,33 +50,13 @@ export default function Home() {
       <Wrapper>
         <Container>
           <Left>
-            {/* SEARCH BAR */}
             <SearchInput
               id='searchProducts'
               name='searchProducts'
               placeholder='Search Products'
             />
             <ListHolder>
-              {productsAvailable ? (
-                <div className=''>
-                  <article className='product-card'>
-                    <Image
-                      src='https://plazavea.vteximg.com.br/arquivos/ids/561765-450-450/20192547.jpg?v=637427443242800000'
-                      alt='A yogurt image'
-                      width={75}
-                      height={75}
-                      draggable={false}
-                    />
-                  </article>
-                  <div className=''>
-                    <p>Yogurt de coco Laive</p>
-                    <h2>$23.00</h2>
-                  </div>
-                  <button>Add</button>
-                </div>
-              ) : (
-                <Alert />
-              )}
+              {productsAvailable ? <ProductsList /> : <Alert />}
             </ListHolder>
           </Left>
           <Right>RIGHT</Right>
