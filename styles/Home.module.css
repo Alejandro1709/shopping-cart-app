@@ -1,0 +1,9 @@
+.main {
+  min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--white-clr);
+}

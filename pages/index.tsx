@@ -11,7 +11,10 @@ export default function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main className={styles.main}>
-        <h1>Hola</h1>
+        <section className={styles.container}>
+          <div className={styles.left}>LEFT</div>
+          <div className={styles.right}>RIGHT</div>
+        </section>
       </main>
     </>
   );
