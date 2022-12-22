@@ -12,7 +12,15 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <section className={styles.container}>
-          <div className={styles.left}>LEFT</div>
+          <div className={styles.left}>
+            {/* SEARCH BAR */}
+            <input
+              className={styles.input}
+              type='text'
+              placeholder='Search Products'
+            />
+            <div className={styles.listHolder}>Products</div>
+          </div>
           <div className={styles.right}>RIGHT</div>
         </section>
       </main>
