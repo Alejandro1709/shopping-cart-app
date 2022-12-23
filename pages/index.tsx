@@ -1,7 +1,106 @@
+import { ChangeEvent, useState } from 'react';
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+import Alert from '../components/Alert';
+import Wrapper from '../components/Wrapper';
+import SearchInput from '../components/SearchInput';
+import ProductsList from '../components/ProductsList';
+import type Product from '../types/product';
+import styled from 'styled-components';
+
+const Container = styled.section`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 6.4rem;
+  width: 50%;
+  background: transparent;
+`;
+
+const Left = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 45rem;
+  gap: 1.6rem;
+`;
+
+const ListHolder = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 48rem;
+  border-radius: 4px;
+  background-color: var(--white-clr);
+`;
+
+const Right = styled.div`
+  width: 50rem;
+  background-color: var(--white-clr);
+`;
+
+const dummyProducts: Array<Product> = [
+  {
+    id: 1,
+    title: 'Yogurt de Laive',
+    imageUrl:
+      'https://plazavea.vteximg.com.br/arquivos/ids/561765-450-450/20192547.jpg?v=637427443242800000',
+    price: 230,
+    quantity: 0,
+  },
+  {
+    id: 2,
+    title: 'Pintura Verde',
+    imageUrl:
+      'https://plazavea.vteximg.com.br/arquivos/ids/328851-450-450/image-ae37192da6a44d56aba28a2f3bee7d93.jpg?v=637258500489630000',
+    price: 230,
+    quantity: 0,
+  },
+  {
+    id: 3,
+    title: 'Gaseosa Coca-Cola',
+    imageUrl:
+      'https://plazavea.vteximg.com.br/arquivos/ids/19996084-1000-1000/987120.jpg',
+    price: 230,
+    quantity: 0,
+  },
+  {
+    id: 4,
+    title: 'Chocolate Hersheys',
+    imageUrl:
+      'https://plazavea.vteximg.com.br/arquivos/ids/500510-1000-1000/20127649.jpg?v=637407108462800000',
+    price: 230,
+    quantity: 0,
+  },
+  {
+    id: 5,
+    title: 'Chocolate Blanco Hersheys',
+    imageUrl:
+      'https://plazavea.vteximg.com.br/arquivos/ids/500547-1000-1000/20170153.jpg?v=637407109632030000',
+    price: 230,
+    quantity: 0,
+  },
+];
 
 export default function Home() {
+  // const [productsAvailable, setProductsAvailable] = useState<boolean>(true);
+  const [inputQuery, setInputQuery] = useState<string>('');
+  const [foundProducts, setFoundProducts] = useState<Array<Product>>([]);
+
+  const handleSearchProducts = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputQuery(e.target.value);
+
+    if (inputQuery.length >= 2) {
+      const matchedProducts: Array<Product> = dummyProducts.filter(
+        (prod: Product) =>
+          prod.title.toLowerCase().includes(inputQuery.toLowerCase())
+      );
+
+      if (!matchedProducts) return;
+
+      setFoundProducts(matchedProducts);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -10,12 +109,27 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main className={styles.main}>
-        <section className={styles.container}>
-          <div className={styles.left}>LEFT</div>
-          <div className={styles.right}>RIGHT</div>
-        </section>
-      </main>
+      <Wrapper>
+        <Container>
+          <Left>
+            <SearchInput
+              id='searchProducts'
+              name='searchProducts'
+              placeholder='Search Products'
+              value={inputQuery}
+              onChange={handleSearchProducts}
+            />
+            <ListHolder>
+              {foundProducts.length > 0 ? (
+                <ProductsList products={foundProducts} />
+              ) : (
+                <Alert />
+              )}
+            </ListHolder>
+          </Left>
+          <Right>RIGHT</Right>
+        </Container>
+      </Wrapper>
     </>
   );
 }
