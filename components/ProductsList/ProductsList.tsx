@@ -5,6 +5,11 @@ function ProductsList() {
   return (
     <List>
       <ProductCard />
+      <ProductCard />
+      <ProductCard />
+      <ProductCard />
+      <ProductCard />
+      <ProductCard />
     </List>
   );
 }
