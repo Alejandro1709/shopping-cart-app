@@ -1,15 +1,22 @@
-import ProductCard from '../ProductCard';
 import { List } from './styles';
+import ProductCard from '../ProductCard';
+import Alert from '../Alert';
+import type Product from '../../types/product';
 
-function ProductsList() {
+type ProductsListProps = {
+  products?: Array<Product>;
+};
+
+function ProductsList({ products }: ProductsListProps) {
   return (
     <List>
-      <ProductCard />
-      <ProductCard />
-      <ProductCard />
-      <ProductCard />
-      <ProductCard />
-      <ProductCard />
+      {products && products.length > 0 ? (
+        products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))
+      ) : (
+        <Alert />
+      )}
     </List>
   );
 }

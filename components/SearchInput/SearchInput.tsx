@@ -1,3 +1,4 @@
+import { ChangeEvent } from 'react';
 import { Input } from './styles';
 
 type SearchInputProps = {
@@ -6,14 +7,14 @@ type SearchInputProps = {
   type?: string;
   placeholder?: string;
   value?: string;
-  onChange?: () => void;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
 function SearchInput({
   id,
   name,
   type = 'text',
-  placeholder,
+  placeholder = 'Placeholder',
   value,
   onChange,
 }: SearchInputProps) {

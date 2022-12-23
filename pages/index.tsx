@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import Head from 'next/head';
 import Alert from '../components/Alert';
 import Wrapper from '../components/Wrapper';
 import SearchInput from '../components/SearchInput';
 import ProductsList from '../components/ProductsList';
+import type Product from '../types/product';
 import styled from 'styled-components';
 
 const Container = styled.section`
@@ -37,8 +38,69 @@ const Right = styled.div`
   background-color: var(--white-clr);
 `;
 
+const dummyProducts: Array<Product> = [
+  {
+    id: 1,
+    title: 'Yogurt de Laive',
+    imageUrl:
+      'https://plazavea.vteximg.com.br/arquivos/ids/561765-450-450/20192547.jpg?v=637427443242800000',
+    price: 230,
+    quantity: 0,
+  },
+  {
+    id: 2,
+    title: 'Pintura Verde',
+    imageUrl:
+      'https://plazavea.vteximg.com.br/arquivos/ids/561765-450-450/20192547.jpg?v=637427443242800000',
+    price: 230,
+    quantity: 0,
+  },
+  {
+    id: 3,
+    title: 'Gaseosa Coca-Cola',
+    imageUrl:
+      'https://plazavea.vteximg.com.br/arquivos/ids/561765-450-450/20192547.jpg?v=637427443242800000',
+    price: 230,
+    quantity: 0,
+  },
+  {
+    id: 4,
+    title: 'Chocolate',
+    imageUrl:
+      'https://plazavea.vteximg.com.br/arquivos/ids/561765-450-450/20192547.jpg?v=637427443242800000',
+    price: 230,
+    quantity: 0,
+  },
+  {
+    id: 5,
+    title: 'Chocolate Blanco',
+    imageUrl:
+      'https://plazavea.vteximg.com.br/arquivos/ids/561765-450-450/20192547.jpg?v=637427443242800000',
+    price: 230,
+    quantity: 0,
+  },
+];
+
 export default function Home() {
   const [productsAvailable, setProductsAvailable] = useState<boolean>(true);
+  const [inputQuery, setInputQuery] = useState<string>('');
+  const [foundProducts, setFoundProducts] = useState<Array<Product>>([]);
+
+  const handleSearchProducts = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputQuery(e.target.value);
+
+    if (inputQuery.length >= 2) {
+      const matchedProducts: Array<Product> = dummyProducts.filter(
+        (prod: Product) =>
+          prod.title.toLowerCase().includes(inputQuery.toLowerCase())
+      );
+
+      if (!matchedProducts) return;
+
+      setFoundProducts(matchedProducts);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -54,9 +116,15 @@ export default function Home() {
               id='searchProducts'
               name='searchProducts'
               placeholder='Search Products'
+              value={inputQuery}
+              onChange={handleSearchProducts}
             />
             <ListHolder>
-              {productsAvailable ? <ProductsList /> : <Alert />}
+              {productsAvailable ? (
+                <ProductsList products={foundProducts} />
+              ) : (
+                <Alert />
+              )}
             </ListHolder>
           </Left>
           <Right>RIGHT</Right>
