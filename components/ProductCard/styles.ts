@@ -13,7 +13,7 @@ export const Product = styled.article`
 export const Left = styled.div`
   display: flex;
   width: fit-content;
-  background-color: lightblue;
+  background-color: white;
 `;
 
 export const Center = styled.div`
