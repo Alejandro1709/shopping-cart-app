@@ -46,7 +46,6 @@ const dummyProducts: Array<Product> = [
       'https://plazavea.vteximg.com.br/arquivos/ids/561765-450-450/20192547.jpg?v=637427443242800000',
     price: 230,
     quantity: 0,
-    inCart: true,
   },
   {
     id: 2,
@@ -63,7 +62,6 @@ const dummyProducts: Array<Product> = [
       'https://plazavea.vteximg.com.br/arquivos/ids/19996084-1000-1000/987120.jpg',
     price: 230,
     quantity: 0,
-    inCart: true,
   },
   {
     id: 4,
@@ -72,7 +70,6 @@ const dummyProducts: Array<Product> = [
       'https://plazavea.vteximg.com.br/arquivos/ids/500510-1000-1000/20127649.jpg?v=637407108462800000',
     price: 230,
     quantity: 0,
-    inCart: true,
   },
   {
     id: 5,
@@ -85,7 +82,8 @@ const dummyProducts: Array<Product> = [
 ];
 
 export default function Home() {
-  // const [productsAvailable, setProductsAvailable] = useState<boolean>(true);
+  const [productsAvailable, setProductsAvailable] =
+    useState<Array<Product>>(dummyProducts);
   const [inputQuery, setInputQuery] = useState<string>('');
   const [foundProducts, setFoundProducts] = useState<Array<Product>>([]);
 
@@ -102,6 +100,27 @@ export default function Home() {
 
       setFoundProducts(matchedProducts);
     }
+  };
+
+  const handleAddItemToCart = (item: Product) => {
+    item.inCart = true;
+    setProductsAvailable([...productsAvailable, item]);
+  };
+
+  const handleRemoveItem = (item: Product) => {
+    const foundProduct: Product | undefined = dummyProducts.find(
+      (prod) => prod.id === item.id
+    );
+
+    if (!foundProduct) return;
+
+    foundProduct.inCart = false;
+
+    const filtered = productsAvailable.filter(
+      (prod) => prod.id !== foundProduct.id
+    );
+
+    setProductsAvailable(filtered);
   };
 
   return (
@@ -124,7 +143,11 @@ export default function Home() {
             />
             <ListHolder>
               {foundProducts.length > 0 ? (
-                <ProductsList products={foundProducts} />
+                <ProductsList
+                  products={foundProducts}
+                  onCartAdd={handleAddItemToCart}
+                  onCartChange={handleRemoveItem}
+                />
               ) : (
                 <Alert />
               )}
