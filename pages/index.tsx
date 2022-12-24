@@ -46,6 +46,7 @@ const dummyProducts: Array<Product> = [
       'https://plazavea.vteximg.com.br/arquivos/ids/561765-450-450/20192547.jpg?v=637427443242800000',
     price: 230,
     quantity: 0,
+    inCart: true,
   },
   {
     id: 2,
@@ -62,6 +63,7 @@ const dummyProducts: Array<Product> = [
       'https://plazavea.vteximg.com.br/arquivos/ids/19996084-1000-1000/987120.jpg',
     price: 230,
     quantity: 0,
+    inCart: true,
   },
   {
     id: 4,
@@ -70,6 +72,7 @@ const dummyProducts: Array<Product> = [
       'https://plazavea.vteximg.com.br/arquivos/ids/500510-1000-1000/20127649.jpg?v=637407108462800000',
     price: 230,
     quantity: 0,
+    inCart: true,
   },
   {
     id: 5,

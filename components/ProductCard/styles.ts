@@ -3,9 +3,11 @@ import styled from 'styled-components';
 export const Product = styled.article`
   display: flex;
   flex-direction: row;
+  position: relative;
   justify-content: space-between;
   gap: 1.6rem;
   align-items: center;
+  position: relative;
   padding: 1.6rem;
   border-bottom: 1px solid var(--border-clr);
 `;
@@ -50,4 +52,12 @@ export const AddButton = styled.button`
   color: white;
   background-color: var(--main-orange-clr);
   cursor: pointer;
+`;
+
+export const RWrapper = styled.div`
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  z-index: 1000;
 `;

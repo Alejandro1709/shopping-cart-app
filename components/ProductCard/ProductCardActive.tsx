@@ -1,20 +1,14 @@
-import { useState } from 'react';
 import Image from 'next/image';
 import type Product from '../../types/product';
-import ProductCardActive from './ProductCardActive';
-import * as S from './styles';
 import Counter from '../Counter';
+import * as S from './styles';
 
 type ProductCardProps = {
   product: Product;
 };
 
-function ProductCard({ product }: ProductCardProps) {
-  const [isCounterShowing, setIsCounterShowing] = useState<boolean>(false);
-
-  return product.inCart ? (
-    <ProductCardActive product={product} />
-  ) : (
+function ProductCardActive({ product }: ProductCardProps) {
+  return (
     <S.Product>
       <S.Left>
         <Image
@@ -30,14 +24,10 @@ function ProductCard({ product }: ProductCardProps) {
         <S.Price>${Intl.NumberFormat('en-US').format(product.price)}</S.Price>
       </S.Center>
       <S.Right>
-        {isCounterShowing ? (
-          <Counter />
-        ) : (
-          <S.AddButton onClick={() => setIsCounterShowing(true)}>+</S.AddButton>
-        )}
+        <Counter />
       </S.Right>
     </S.Product>
   );
 }
 
-export default ProductCard;
+export default ProductCardActive;
