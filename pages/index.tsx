@@ -7,6 +7,7 @@ import Wrapper from '../components/Wrapper';
 import SearchInput from '../components/SearchInput';
 import ProductsList from '../components/ProductsList';
 import styled from 'styled-components';
+import Cart from '../components/Cart';
 
 const Container = styled.section`
   display: flex;
@@ -35,8 +36,10 @@ const ListHolder = styled.div`
 `;
 
 const Right = styled.div`
+  height: calc(48rem - 4px);
+  align-self: flex-end;
   width: 50rem;
-  background-color: var(--white-clr);
+  /* background-color: var(--white-clr); */
 `;
 
 export default function Home() {
@@ -111,7 +114,9 @@ export default function Home() {
               )}
             </ListHolder>
           </Left>
-          <Right>RIGHT</Right>
+          <Right>
+            <Cart />
+          </Right>
         </Container>
       </Wrapper>
     </>
