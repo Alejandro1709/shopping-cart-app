@@ -1,7 +1,89 @@
+import { ChangeEvent, useState } from 'react';
+import { dummyProducts } from '../data/products';
+import type Product from '../types/product';
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+import Alert from '../components/Alert';
+import Wrapper from '../components/Wrapper';
+import SearchInput from '../components/SearchInput';
+import ProductsList from '../components/ProductsList';
+import styled from 'styled-components';
+import Cart from '../components/Cart';
+
+const Container = styled.section`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 6.4rem;
+  width: 50%;
+  background: transparent;
+`;
+
+const Left = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 45rem;
+  gap: 1.6rem;
+`;
+
+const ListHolder = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 48rem;
+  border-radius: 4px;
+  background-color: var(--white-clr);
+`;
+
+const Right = styled.div`
+  height: calc(48rem - 4px);
+  align-self: flex-end;
+  width: 50rem;
+  /* background-color: var(--white-clr); */
+`;
 
 export default function Home() {
+  const [productsAvailable, setProductsAvailable] =
+    useState<Array<Product>>(dummyProducts);
+  const [inputQuery, setInputQuery] = useState<string>('');
+  const [foundProducts, setFoundProducts] = useState<Array<Product>>([]);
+
+  const handleSearchProducts = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputQuery(e.target.value);
+
+    if (inputQuery.length >= 2) {
+      const matchedProducts: Array<Product> = dummyProducts.filter(
+        (prod: Product) =>
+          prod.title.toLowerCase().includes(inputQuery.toLowerCase())
+      );
+
+      if (!matchedProducts) return;
+
+      setFoundProducts(matchedProducts);
+    }
+  };
+
+  const handleAddItemToCart = (item: Product) => {
+    item.inCart = true;
+    setProductsAvailable([...productsAvailable, item]);
+  };
+
+  const handleRemoveItem = (item: Product) => {
+    const foundProduct: Product | undefined = dummyProducts.find(
+      (prod) => prod.id === item.id
+    );
+
+    if (!foundProduct) return;
+
+    foundProduct.inCart = false;
+
+    const filtered = productsAvailable.filter(
+      (prod) => prod.id !== foundProduct.id
+    );
+
+    setProductsAvailable(filtered);
+  };
+
   return (
     <>
       <Head>
@@ -10,12 +92,33 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main className={styles.main}>
-        <section className={styles.container}>
-          <div className={styles.left}>LEFT</div>
-          <div className={styles.right}>RIGHT</div>
-        </section>
-      </main>
+      <Wrapper>
+        <Container>
+          <Left>
+            <SearchInput
+              id='searchProducts'
+              name='searchProducts'
+              placeholder='Search Products'
+              value={inputQuery}
+              onChange={handleSearchProducts}
+            />
+            <ListHolder>
+              {foundProducts.length > 0 ? (
+                <ProductsList
+                  products={foundProducts}
+                  onCartAdd={handleAddItemToCart}
+                  onCartChange={handleRemoveItem}
+                />
+              ) : (
+                <Alert />
+              )}
+            </ListHolder>
+          </Left>
+          <Right>
+            <Cart />
+          </Right>
+        </Container>
+      </Wrapper>
     </>
   );
 }
