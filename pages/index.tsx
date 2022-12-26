@@ -1,11 +1,13 @@
 import { ChangeEvent, useState } from 'react';
+import { dummyProducts } from '../data/products';
+import type Product from '../types/product';
 import Head from 'next/head';
 import Alert from '../components/Alert';
 import Wrapper from '../components/Wrapper';
 import SearchInput from '../components/SearchInput';
 import ProductsList from '../components/ProductsList';
-import type Product from '../types/product';
 import styled from 'styled-components';
+import Cart from '../components/Cart';
 
 const Container = styled.section`
   display: flex;
@@ -34,55 +36,15 @@ const ListHolder = styled.div`
 `;
 
 const Right = styled.div`
+  height: calc(48rem - 4px);
+  align-self: flex-end;
   width: 50rem;
-  background-color: var(--white-clr);
+  /* background-color: var(--white-clr); */
 `;
 
-const dummyProducts: Array<Product> = [
-  {
-    id: 1,
-    title: 'Yogurt de Laive',
-    imageUrl:
-      'https://plazavea.vteximg.com.br/arquivos/ids/561765-450-450/20192547.jpg?v=637427443242800000',
-    price: 230,
-    quantity: 0,
-  },
-  {
-    id: 2,
-    title: 'Pintura Verde',
-    imageUrl:
-      'https://plazavea.vteximg.com.br/arquivos/ids/328851-450-450/image-ae37192da6a44d56aba28a2f3bee7d93.jpg?v=637258500489630000',
-    price: 230,
-    quantity: 0,
-  },
-  {
-    id: 3,
-    title: 'Gaseosa Coca-Cola',
-    imageUrl:
-      'https://plazavea.vteximg.com.br/arquivos/ids/19996084-1000-1000/987120.jpg',
-    price: 230,
-    quantity: 0,
-  },
-  {
-    id: 4,
-    title: 'Chocolate Hersheys',
-    imageUrl:
-      'https://plazavea.vteximg.com.br/arquivos/ids/500510-1000-1000/20127649.jpg?v=637407108462800000',
-    price: 230,
-    quantity: 0,
-  },
-  {
-    id: 5,
-    title: 'Chocolate Blanco Hersheys',
-    imageUrl:
-      'https://plazavea.vteximg.com.br/arquivos/ids/500547-1000-1000/20170153.jpg?v=637407109632030000',
-    price: 230,
-    quantity: 0,
-  },
-];
-
 export default function Home() {
-  // const [productsAvailable, setProductsAvailable] = useState<boolean>(true);
+  const [productsAvailable, setProductsAvailable] =
+    useState<Array<Product>>(dummyProducts);
   const [inputQuery, setInputQuery] = useState<string>('');
   const [foundProducts, setFoundProducts] = useState<Array<Product>>([]);
 
@@ -99,6 +61,27 @@ export default function Home() {
 
       setFoundProducts(matchedProducts);
     }
+  };
+
+  const handleAddItemToCart = (item: Product) => {
+    item.inCart = true;
+    setProductsAvailable([...productsAvailable, item]);
+  };
+
+  const handleRemoveItem = (item: Product) => {
+    const foundProduct: Product | undefined = dummyProducts.find(
+      (prod) => prod.id === item.id
+    );
+
+    if (!foundProduct) return;
+
+    foundProduct.inCart = false;
+
+    const filtered = productsAvailable.filter(
+      (prod) => prod.id !== foundProduct.id
+    );
+
+    setProductsAvailable(filtered);
   };
 
   return (
@@ -121,13 +104,19 @@ export default function Home() {
             />
             <ListHolder>
               {foundProducts.length > 0 ? (
-                <ProductsList products={foundProducts} />
+                <ProductsList
+                  products={foundProducts}
+                  onCartAdd={handleAddItemToCart}
+                  onCartChange={handleRemoveItem}
+                />
               ) : (
                 <Alert />
               )}
             </ListHolder>
           </Left>
-          <Right>RIGHT</Right>
+          <Right>
+            <Cart />
+          </Right>
         </Container>
       </Wrapper>
     </>

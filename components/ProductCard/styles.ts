@@ -5,9 +5,19 @@ export const Product = styled.article`
   flex-direction: row;
   justify-content: space-between;
   gap: 1.6rem;
+  position: relative;
   align-items: center;
   padding: 1.6rem;
   border-bottom: 1px solid var(--border-clr);
+`;
+
+export const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.5);
 `;
 
 export const Left = styled.div`
@@ -36,6 +46,8 @@ export const Price = styled.p`
 
 export const Right = styled.div`
   display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
   justify-content: center;
   width: fit-content;
 `;
