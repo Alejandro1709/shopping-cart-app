@@ -4,19 +4,13 @@ import * as S from './styles';
 
 type ProductCardProps = {
   product: Product;
-  onCartAdd: (item: Product) => void;
 };
 
 type CartProductCardProps = {
   product: Product;
-  cart?: Array<Product>;
-  onCartChange: (item: Product) => void;
 };
 
-export function CartProductCard({
-  product,
-  onCartChange,
-}: CartProductCardProps) {
+export function CartProductCard({ product }: CartProductCardProps) {
   return (
     <S.Product>
       <S.Left>
@@ -34,13 +28,13 @@ export function CartProductCard({
       </S.Center>
       <S.Right>
         <S.AddButton>1</S.AddButton>
-        <button onClick={() => onCartChange(product)}>Delete</button>
+        <button>Delete</button>
       </S.Right>
     </S.Product>
   );
 }
 
-function ProductCard({ product, onCartAdd }: ProductCardProps) {
+function ProductCard({ product }: ProductCardProps) {
   return (
     <S.Product>
       <S.Left>
@@ -57,7 +51,7 @@ function ProductCard({ product, onCartAdd }: ProductCardProps) {
         <S.Price>${Intl.NumberFormat('en-US').format(product.price)}</S.Price>
       </S.Center>
       <S.Right>
-        <S.AddButton onClick={() => onCartAdd(product)}>+</S.AddButton>
+        <S.AddButton>+</S.AddButton>
       </S.Right>
     </S.Product>
   );

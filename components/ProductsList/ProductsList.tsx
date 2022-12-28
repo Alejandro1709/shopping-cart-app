@@ -6,34 +6,17 @@ import { CartProductCard } from '../ProductCard/ProductCard';
 
 type ProductsListProps = {
   products?: Array<Product>;
-  cart?: Array<Product>;
-  onCartChange: (item: Product) => void;
-  onCartAdd: (item: Product) => void;
 };
 
-function ProductsList({
-  products,
-  cart,
-  onCartChange,
-  onCartAdd,
-}: ProductsListProps) {
+function ProductsList({ products }: ProductsListProps) {
   return (
     <List>
       {products && products.length > 0 ? (
         products.map((product) => {
           return product.inCart ? (
-            <CartProductCard
-              key={product.id}
-              product={product}
-              cart={cart}
-              onCartChange={onCartChange}
-            />
+            <CartProductCard key={product.id} product={product} />
           ) : (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onCartAdd={onCartAdd}
-            />
+            <ProductCard key={product.id} product={product} />
           );
         })
       ) : (
