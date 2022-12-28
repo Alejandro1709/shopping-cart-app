@@ -1,13 +1,14 @@
 import { ChangeEvent, useState } from 'react';
-import { dummyProducts } from '../data/products';
-import type Product from '../types/product';
+import { gql } from '@apollo/client';
+import client from '../apollo-client';
 import Head from 'next/head';
 import Alert from '../components/Alert';
 import Wrapper from '../components/Wrapper';
 import SearchInput from '../components/SearchInput';
 import ProductsList from '../components/ProductsList';
-import styled from 'styled-components';
 import Cart from '../components/Cart';
+import styled from 'styled-components';
+import type Product from '../types/product';
 
 const Container = styled.section`
   display: flex;
@@ -42,9 +43,13 @@ const Right = styled.div`
   /* background-color: var(--white-clr); */
 `;
 
-export default function Home() {
+type HomeProps = {
+  products: Array<Product>;
+};
+
+export default function Home({ products }: HomeProps) {
   const [productsAvailable, setProductsAvailable] =
-    useState<Array<Product>>(dummyProducts);
+    useState<Array<Product>>(products);
   const [inputQuery, setInputQuery] = useState<string>('');
   const [foundProducts, setFoundProducts] = useState<Array<Product>>([]);
 
@@ -52,7 +57,7 @@ export default function Home() {
     setInputQuery(e.target.value);
 
     if (inputQuery.length >= 2) {
-      const matchedProducts: Array<Product> = dummyProducts.filter(
+      const matchedProducts: Array<Product> = productsAvailable.filter(
         (prod: Product) =>
           prod.title.toLowerCase().includes(inputQuery.toLowerCase())
       );
@@ -63,25 +68,8 @@ export default function Home() {
     }
   };
 
-  const handleAddItemToCart = (item: Product) => {
-    item.inCart = true;
-    setProductsAvailable([...productsAvailable, item]);
-  };
-
-  const handleRemoveItem = (item: Product) => {
-    const foundProduct: Product | undefined = dummyProducts.find(
-      (prod) => prod.id === item.id
-    );
-
-    if (!foundProduct) return;
-
-    foundProduct.inCart = false;
-
-    const filtered = productsAvailable.filter(
-      (prod) => prod.id !== foundProduct.id
-    );
-
-    setProductsAvailable(filtered);
+  const handleAddProductToCart = () => {
+    console.log('add product to cart');
   };
 
   return (
@@ -103,12 +91,8 @@ export default function Home() {
               onChange={handleSearchProducts}
             />
             <ListHolder>
-              {foundProducts.length > 0 ? (
-                <ProductsList
-                  products={foundProducts}
-                  onCartAdd={handleAddItemToCart}
-                  onCartChange={handleRemoveItem}
-                />
+              {products.length > 0 ? (
+                <ProductsList products={foundProducts} />
               ) : (
                 <Alert />
               )}
@@ -121,4 +105,28 @@ export default function Home() {
       </Wrapper>
     </>
   );
+}
+
+export async function getServerSideProps() {
+  const { data } = await client.query({
+    query: gql`
+      query getProducts {
+        products {
+          id
+          title
+          imageUrl
+          price
+          quantity
+        }
+      }
+    `,
+  });
+
+  console.log(data);
+
+  return {
+    props: {
+      products: data.products,
+    },
+  };
 }
