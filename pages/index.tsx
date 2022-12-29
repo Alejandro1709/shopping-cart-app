@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { useEffect } from 'react';
 import { gql } from '@apollo/client';
 import client from '../apollo-client';
 import Head from 'next/head';
@@ -9,6 +9,7 @@ import ProductsList from '../components/ProductsList';
 import Cart from '../components/Cart';
 import styled from 'styled-components';
 import type Product from '../types/product';
+import { useProducts } from '../hooks/useProducts';
 
 const Container = styled.section`
   display: flex;
@@ -48,29 +49,12 @@ type HomeProps = {
 };
 
 export default function Home({ products }: HomeProps) {
-  const [productsAvailable, setProductsAvailable] =
-    useState<Array<Product>>(products);
-  const [inputQuery, setInputQuery] = useState<string>('');
-  const [foundProducts, setFoundProducts] = useState<Array<Product>>([]);
+  const { setProductsAvailable } = useProducts();
 
-  const handleSearchProducts = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputQuery(e.target.value);
-
-    if (inputQuery.length >= 2) {
-      const matchedProducts: Array<Product> = productsAvailable.filter(
-        (prod: Product) =>
-          prod.title.toLowerCase().includes(inputQuery.toLowerCase())
-      );
-
-      if (!matchedProducts) return;
-
-      setFoundProducts(matchedProducts);
-    }
-  };
-
-  const handleAddProductToCart = () => {
-    console.log('add product to cart');
-  };
+  useEffect(() => {
+    setProductsAvailable(products);
+    // eslint-disable-next-line
+  }, [products]);
 
   return (
     <>
@@ -87,15 +71,9 @@ export default function Home({ products }: HomeProps) {
               id='searchProducts'
               name='searchProducts'
               placeholder='Search Products'
-              value={inputQuery}
-              onChange={handleSearchProducts}
             />
             <ListHolder>
-              {products.length > 0 ? (
-                <ProductsList products={foundProducts} />
-              ) : (
-                <Alert />
-              )}
+              {products.length > 0 ? <ProductsList /> : <Alert />}
             </ListHolder>
           </Left>
           <Right>
@@ -121,8 +99,6 @@ export async function getServerSideProps() {
       }
     `,
   });
-
-  console.log(data);
 
   return {
     props: {

@@ -1,30 +1,14 @@
 import Image from 'next/image';
+import { useProducts } from '../../hooks/useProducts';
 import Disk from '../../public/disk.png';
 import * as S from './styles';
 
 function Cart() {
-  const products = [
-    {
-      id: 3,
-      title: 'Gaseosa Coca-Cola',
-      imageUrl:
-        'https://plazavea.vteximg.com.br/arquivos/ids/19996084-1000-1000/987120.jpg',
-      price: 50,
-      quantity: 0,
-    },
-    {
-      id: 4,
-      title: 'Chocolate Hersheys',
-      imageUrl:
-        'https://plazavea.vteximg.com.br/arquivos/ids/500510-1000-1000/20127649.jpg?v=637407108462800000',
-      price: 50,
-      quantity: 0,
-    },
-  ];
+  const { cart } = useProducts();
 
-  const totalPrices = products.reduce((acc, product) => product.price + acc, 0);
+  const totalPrices = cart.reduce((acc, product) => product.price + acc, 0);
   const shipping = totalPrices * 0.1;
-  const taxes = totalPrices * 0.18;
+  const taxes = Math.round(totalPrices * 0.18);
   const total = totalPrices + shipping;
 
   const today = new Date();
