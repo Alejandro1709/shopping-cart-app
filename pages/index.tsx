@@ -10,6 +10,8 @@ import Cart from '../components/Cart';
 import styled from 'styled-components';
 import type Product from '../types/product';
 import { useProducts } from '../hooks/useProducts';
+import ProductCard from '../components/ProductCard';
+import { CartProductCard } from '../components/ProductCard/ProductCard';
 
 const Container = styled.section`
   display: flex;
@@ -49,7 +51,20 @@ type HomeProps = {
 };
 
 export default function Home({ products }: HomeProps) {
-  const { setProductsAvailable } = useProducts();
+  const { cart, setProductsAvailable } = useProducts();
+
+  const combineDuplicateProducts = (products: Array<Product>) => {
+    const combinedProducts = products.reduce((acc, product) => {
+      const existingProduct = acc.find((p) => p.id === product.id);
+      if (existingProduct) {
+        existingProduct.quantity += product.quantity;
+        return acc;
+      } else {
+        return acc.concat(product);
+      }
+    }, [] as Array<Product>);
+    return combinedProducts;
+  };
 
   useEffect(() => {
     setProductsAvailable(products);
@@ -73,6 +88,11 @@ export default function Home({ products }: HomeProps) {
               placeholder='Search Products'
             />
             <ListHolder>
+              {combineDuplicateProducts(cart).length > 0
+                ? combineDuplicateProducts(cart).map((product) => (
+                    <CartProductCard key={product.id} product={product} />
+                  ))
+                : null}
               {products.length > 0 ? <ProductsList /> : <Alert />}
             </ListHolder>
           </Left>
