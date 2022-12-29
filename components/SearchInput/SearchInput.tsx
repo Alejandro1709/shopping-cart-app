@@ -1,4 +1,5 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useContext } from 'react';
+import { ProductContext } from '../../context/productsContext';
 import { Input } from './styles';
 
 type SearchInputProps = {
@@ -6,8 +7,6 @@ type SearchInputProps = {
   name: string;
   type?: string;
   placeholder?: string;
-  value?: string;
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
 function SearchInput({
@@ -15,17 +14,16 @@ function SearchInput({
   name,
   type = 'text',
   placeholder = 'Placeholder',
-  value,
-  onChange,
 }: SearchInputProps) {
+  const { inputQuery, handleSearchProducts } = useContext(ProductContext);
   return (
     <Input
       id={id}
       name={name}
       type={type}
       placeholder={placeholder}
-      value={value}
-      onChange={onChange}
+      value={inputQuery}
+      onChange={handleSearchProducts}
     />
   );
 }

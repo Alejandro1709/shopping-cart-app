@@ -1,13 +1,17 @@
-import { ChangeEvent, useState } from 'react';
-import { dummyProducts } from '../data/products';
-import type Product from '../types/product';
+import { useEffect } from 'react';
+import { gql } from '@apollo/client';
+import client from '../apollo-client';
 import Head from 'next/head';
 import Alert from '../components/Alert';
 import Wrapper from '../components/Wrapper';
 import SearchInput from '../components/SearchInput';
 import ProductsList from '../components/ProductsList';
-import styled from 'styled-components';
 import Cart from '../components/Cart';
+import styled from 'styled-components';
+import type Product from '../types/product';
+import { useProducts } from '../hooks/useProducts';
+import ProductCard from '../components/ProductCard';
+import { CartProductCard } from '../components/ProductCard/ProductCard';
 
 const Container = styled.section`
   display: flex;
@@ -42,47 +46,30 @@ const Right = styled.div`
   /* background-color: var(--white-clr); */
 `;
 
-export default function Home() {
-  const [productsAvailable, setProductsAvailable] =
-    useState<Array<Product>>(dummyProducts);
-  const [inputQuery, setInputQuery] = useState<string>('');
-  const [foundProducts, setFoundProducts] = useState<Array<Product>>([]);
+type HomeProps = {
+  products: Array<Product>;
+};
 
-  const handleSearchProducts = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputQuery(e.target.value);
+export default function Home({ products }: HomeProps) {
+  const { cart, setProductsAvailable } = useProducts();
 
-    if (inputQuery.length >= 2) {
-      const matchedProducts: Array<Product> = dummyProducts.filter(
-        (prod: Product) =>
-          prod.title.toLowerCase().includes(inputQuery.toLowerCase())
-      );
-
-      if (!matchedProducts) return;
-
-      setFoundProducts(matchedProducts);
-    }
+  const combineDuplicateProducts = (products: Array<Product>) => {
+    const combinedProducts = products.reduce((acc, product) => {
+      const existingProduct = acc.find((p) => p.id === product.id);
+      if (existingProduct) {
+        existingProduct.quantity += product.quantity;
+        return acc;
+      } else {
+        return acc.concat(product);
+      }
+    }, [] as Array<Product>);
+    return combinedProducts;
   };
 
-  const handleAddItemToCart = (item: Product) => {
-    item.inCart = true;
-    setProductsAvailable([...productsAvailable, item]);
-  };
-
-  const handleRemoveItem = (item: Product) => {
-    const foundProduct: Product | undefined = dummyProducts.find(
-      (prod) => prod.id === item.id
-    );
-
-    if (!foundProduct) return;
-
-    foundProduct.inCart = false;
-
-    const filtered = productsAvailable.filter(
-      (prod) => prod.id !== foundProduct.id
-    );
-
-    setProductsAvailable(filtered);
-  };
+  useEffect(() => {
+    setProductsAvailable(products);
+    // eslint-disable-next-line
+  }, [products]);
 
   return (
     <>
@@ -99,19 +86,14 @@ export default function Home() {
               id='searchProducts'
               name='searchProducts'
               placeholder='Search Products'
-              value={inputQuery}
-              onChange={handleSearchProducts}
             />
             <ListHolder>
-              {foundProducts.length > 0 ? (
-                <ProductsList
-                  products={foundProducts}
-                  onCartAdd={handleAddItemToCart}
-                  onCartChange={handleRemoveItem}
-                />
-              ) : (
-                <Alert />
-              )}
+              {combineDuplicateProducts(cart).length > 0
+                ? combineDuplicateProducts(cart).map((product) => (
+                    <CartProductCard key={product.id} product={product} />
+                  ))
+                : null}
+              {products.length > 0 ? <ProductsList /> : <Alert />}
             </ListHolder>
           </Left>
           <Right>
@@ -121,4 +103,26 @@ export default function Home() {
       </Wrapper>
     </>
   );
+}
+
+export async function getServerSideProps() {
+  const { data } = await client.query({
+    query: gql`
+      query getProducts {
+        products {
+          id
+          title
+          imageUrl
+          price
+          quantity
+        }
+      }
+    `,
+  });
+
+  return {
+    props: {
+      products: data.products,
+    },
+  };
 }

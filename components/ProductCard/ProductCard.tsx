@@ -1,22 +1,22 @@
 import Image from 'next/image';
 import type Product from '../../types/product';
 import * as S from './styles';
+import { useProducts } from '../../hooks/useProducts';
+import Counter from '../Counter';
 
 type ProductCardProps = {
   product: Product;
-  onCartAdd: (item: Product) => void;
 };
 
-type CartProductCardProps = {
-  product: Product;
-  cart?: Array<Product>;
-  onCartChange: (item: Product) => void;
-};
+export function CartProductCard({ product }: ProductCardProps) {
+  const { setCart } = useProducts();
 
-export function CartProductCard({
-  product,
-  onCartChange,
-}: CartProductCardProps) {
+  const handleDeleteProductFromCart = (product: Product) => {
+    setCart((prevCart) => {
+      return prevCart.filter((p) => p.id !== product.id);
+    });
+  };
+
   return (
     <S.Product>
       <S.Left>
@@ -33,14 +33,18 @@ export function CartProductCard({
         <S.Price>${Intl.NumberFormat('en-US').format(product.price)}</S.Price>
       </S.Center>
       <S.Right>
-        <S.AddButton>1</S.AddButton>
-        <button onClick={() => onCartChange(product)}>Delete</button>
+        <Counter product={product} />
+        <button onClick={() => handleDeleteProductFromCart(product)}>
+          Delete
+        </button>
       </S.Right>
     </S.Product>
   );
 }
 
-function ProductCard({ product, onCartAdd }: ProductCardProps) {
+function ProductCard({ product }: ProductCardProps) {
+  const { handleAddProductToCart } = useProducts();
+
   return (
     <S.Product>
       <S.Left>
@@ -57,7 +61,9 @@ function ProductCard({ product, onCartAdd }: ProductCardProps) {
         <S.Price>${Intl.NumberFormat('en-US').format(product.price)}</S.Price>
       </S.Center>
       <S.Right>
-        <S.AddButton onClick={() => onCartAdd(product)}>+</S.AddButton>
+        <S.AddButton onClick={() => handleAddProductToCart(product)}>
+          +
+        </S.AddButton>
       </S.Right>
     </S.Product>
   );

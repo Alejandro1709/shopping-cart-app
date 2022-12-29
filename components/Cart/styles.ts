@@ -65,17 +65,30 @@ export const CartItem = styled.li`
   }
 `;
 
-export const Button = styled.button`
+type ButtonProps = {
+  enabled?: boolean;
+};
+
+export const Button = styled.button<ButtonProps>`
   padding: 12px 16px;
   border: 0;
   border-radius: 4px;
   text-transform: uppercase;
   font-size: 1.6rem;
-  color: white;
-  background-color: var(--main-orange-clr);
-  cursor: pointer;
+  color: ${(props) =>
+    props.enabled ? 'var(--white-clr)' : 'var(--border-clr)'};
+  background-color: ${(props) =>
+    props.enabled ? 'var(--main-orange-clr)' : 'transparent'};
+  border: 1px solid
+    ${(props) =>
+      props.enabled ? 'var(--main-orange-clr)' : 'var(--border-clr)'};
+  cursor: ${(props) => (props.enabled ? 'pointer' : 'not-allowed')};
 
   &:hover {
     background-color: var(--main-orange-clr-hover);
+  }
+
+  &:disabled:hover {
+    background-color: transparent;
   }
 `;
