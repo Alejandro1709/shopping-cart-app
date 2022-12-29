@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styled from 'styled-components';
 
 export const Cart = styled.section`
@@ -69,10 +70,12 @@ type ButtonProps = {
   enabled?: boolean;
 };
 
-export const Button = styled.button<ButtonProps>`
+export const Button = styled(Link)<ButtonProps>`
   padding: 12px 16px;
   border: 0;
   border-radius: 4px;
+  text-decoration: none;
+  text-align: center;
   text-transform: uppercase;
   font-size: 1.6rem;
   color: ${(props) =>
@@ -83,12 +86,4 @@ export const Button = styled.button<ButtonProps>`
     ${(props) =>
       props.enabled ? 'var(--main-orange-clr)' : 'var(--border-clr)'};
   cursor: ${(props) => (props.enabled ? 'pointer' : 'not-allowed')};
-
-  &:hover {
-    background-color: var(--main-orange-clr-hover);
-  }
-
-  &:disabled:hover {
-    background-color: transparent;
-  }
 `;

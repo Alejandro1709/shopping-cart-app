@@ -10,7 +10,6 @@ import Cart from '../components/Cart';
 import styled from 'styled-components';
 import type Product from '../types/product';
 import { useProducts } from '../hooks/useProducts';
-import ProductCard from '../components/ProductCard';
 import { CartProductCard } from '../components/ProductCard/ProductCard';
 
 const Container = styled.section`

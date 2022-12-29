@@ -61,7 +61,10 @@ function Cart() {
             </S.CartItem>
           </S.CartList>
         </S.CartInfo>
-        <S.Button enabled={total >= 50} disabled={total <= 50}>
+        <S.Button
+          href={total >= 50 ? '/orderPlaced' : '/'}
+          enabled={total >= 50 ? true : false}
+        >
           Complete Order
         </S.Button>
       </S.Inner>
